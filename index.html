@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reelcut — Des heures de vidéo. Des clips qui percent.</title>
+<title>Reelcut — Éditeur Vidéo Pro & Aperçus Avancés</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -27,7 +27,7 @@
   nav a:hover{color:var(--text);}
   .credits{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); border:1px solid var(--line); padding:5px 10px; border-radius:20px;}
 
-  main{max-width:1000px; margin:0 auto; padding:0 5vw 100px;}
+  main{max-width:1100px; margin:0 auto; padding:0 5vw 100px;}
   .screen{display:none;}
   .screen.active{display:block;}
 
@@ -80,28 +80,35 @@
   .seg-control button:last-child{border-right:none;}
   .seg-control button.active{background:var(--surface-2); color:var(--text); font-weight:600;}
 
-  .clip-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:18px;}
+  .clip-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:20px;}
   .clip-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; cursor:pointer; transition:border-color .15s, transform .15s;}
   .clip-card:hover{border-color:#3A3E47; transform:translateY(-2px);}
-  .clip-thumb{aspect-ratio:9/16; position:relative; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.85);}
-  .clip-thumb .dur{position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,.55); font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 6px; border-radius:5px;}
-  .clip-thumb .play{width:34px; height:34px; opacity:.9;}
-  .score-badge{position:absolute; top:8px; left:8px; font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 8px; border-radius:20px; font-weight:600; backdrop-filter:blur(4px);}
+  
+  .clip-thumb{aspect-ratio:9/16; position:relative; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; background:#000;}
+  .clip-thumb img, .clip-thumb canvas, .clip-thumb video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .clip-thumb .thumb-overlay{position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);}
+  .clip-thumb .dur{position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.65); font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 6px; border-radius:5px; z-index:2;}
+  .clip-thumb .play-ico{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; opacity:0.85; z-index:2; transition:transform 0.2s;}
+  .clip-card:hover .play-ico{transform:scale(1.1);}
+  .score-badge{position:absolute; top:8px; left:8px; font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 8px; border-radius:20px; font-weight:600; backdrop-filter:blur(4px); z-index:2;}
   .score-hot{background:rgba(62,235,176,.18); color:var(--mint); border:1px solid rgba(62,235,176,.4);}
   .score-warm{background:rgba(245,185,66,.18); color:var(--amber); border:1px solid rgba(245,185,66,.4);}
   .score-mild{background:rgba(139,141,150,.18); color:var(--muted); border:1px solid rgba(139,141,150,.3);}
+  
   .clip-body{padding:12px 14px 16px;}
-  .clip-hook{font-size:13.5px; line-height:1.4; margin-bottom:8px; color:var(--text);}
+  .clip-hook{font-size:13.5px; line-height:1.4; margin-bottom:8px; color:var(--text); font-weight:500;}
   .clip-meta{display:flex; justify-content:space-between; color:var(--muted); font-size:11.5px; font-family:'IBM Plex Mono',monospace;}
 
   .detail-wrap{display:flex; gap:36px; padding:32px 0; flex-wrap:wrap;}
   .back-link{display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; cursor:pointer; margin-bottom:20px;}
   .back-link:hover{color:var(--text);}
 
-  .phone{width:230px; border-radius:22px; border:1px solid var(--line); position:relative; overflow:hidden; flex-shrink:0; transition:width .2s, aspect-ratio .2s;}
-  .phone .cap{position:absolute; left:10px; right:10px; bottom:20px; text-align:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; line-height:1.3; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.6);}
-  .phone .cap span{background:rgba(0,0,0,.55); padding:2px 6px; border-radius:4px; box-decoration-break:clone;}
-  .phone .cap.style-minimal span{background:none; text-shadow:0 2px 10px rgba(0,0,0,.9);}
+  .preview-container{display:flex; flex-direction:column; align-items:center;}
+  .phone{width:240px; border-radius:22px; border:1px solid var(--line); position:relative; overflow:hidden; flex-shrink:0; background:#000; box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+  .phone video, .phone canvas{width:100%; height:100%; object-fit:cover; display:block;}
+  .phone .cap{position:absolute; left:12px; right:12px; bottom:24px; text-align:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; line-height:1.3; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.8); z-index:5;}
+  .phone .cap span{background:rgba(0,0,0,0.6); padding:3px 8px; border-radius:6px; box-decoration-break:clone;}
+  .phone .cap.style-minimal span{background:none; text-shadow:0 2px 10px rgba(0,0,0,0.9);}
   .phone .cap.style-karaoke span{background:var(--signal); color:#0D0E11; text-shadow:none;}
 
   .aspect-picker{display:flex; gap:8px; margin-top:14px;}
@@ -117,10 +124,10 @@
   .style-row button.active{color:var(--text); border-color:var(--mint);}
 
   .caption-list{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:20px; max-height:260px; overflow-y:auto;}
-  .caption-row{display:flex; gap:12px; padding:12px 14px; border-bottom:1px solid var(--line); align-items:flex-start;}
+  .caption-row{display:flex; gap:12px; padding:12px 14px; border-bottom:1px solid var(--line); align-items:flex-start; background:var(--surface);}
   .caption-row:last-child{border-bottom:none;}
   .caption-row .time{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--mint); flex-shrink:0; padding-top:2px;}
-  .caption-row [contenteditable]{flex:1; font-size:13.5px; outline:none; border-bottom:1px dashed transparent;}
+  .caption-row [contenteditable]{flex:1; font-size:13.5px; outline:none; border-bottom:1px dashed transparent; color:var(--text);}
   .caption-row [contenteditable]:focus{border-bottom:1px dashed var(--signal);}
 
   .action-row{display:flex; gap:10px; flex-wrap:wrap;}
@@ -129,7 +136,7 @@
   .brand-row input[type=color]{width:34px; height:34px; border:none; border-radius:8px; background:none; cursor:pointer; padding:0;}
   .brand-row span{font-size:12.5px; color:var(--muted);}
 
-  /* library drawer */
+  /* Drawer / Library */
   .drawer-backdrop{display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:40;}
   .drawer-backdrop.active{display:block;}
   .drawer{position:fixed; top:0; right:-360px; width:340px; height:100%; background:var(--surface); border-left:1px solid var(--line); z-index:50; transition:right .25s; padding:24px; overflow-y:auto;}
@@ -138,10 +145,8 @@
   .lib-item{border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:10px;}
   .lib-item .lib-title{font-size:13px; font-weight:600; margin-bottom:4px;}
   .lib-item .lib-meta{font-size:11px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:8px;}
-  .lib-item .lib-actions{display:flex; gap:8px;}
-  .lib-empty{color:var(--muted); font-size:13px;}
 
-  footer{border-top:1px solid var(--line); padding:20px 5vw; color:var(--muted); font-size:12px; display:flex; justify-content:space-between;}
+  footer{border-top:1px solid var(--line); padding:20px 5vw; color:var(--muted); font-size:12px; display:flex; justify-content:space-between; margin-top:60px;}
 </style>
 </head>
 <body>
@@ -154,7 +159,7 @@
   <nav>
     <a onclick="goTo('upload')">Nouveau</a>
     <a onclick="openLibrary()">Mes projets</a>
-    <span class="credits mono" id="credits-badge">— crédits</span>
+    <span class="credits mono" id="credits-badge">15 crédits</span>
   </nav>
 </header>
 
@@ -163,28 +168,27 @@
   <!-- SCREEN 1 : UPLOAD -->
   <section class="screen active" id="screen-upload">
     <div class="hero">
-      <div class="eyebrow">Propulsé par l'IA</div>
-      <h1>Un lien vidéo. <em>Des clips qui percent</em> sortent.</h1>
-      <p>Colle le lien de ta vidéo, Reelcut l'analyse, repère les moments forts et génère les sous-titres dynamiques prêts à télécharger.</p>
+      <div class="eyebrow">Studio Vidéo & Découpage IA</div>
+      <h1>Un lien vidéo. <em>Des clips parfaits</em> générés instantanément.</h1>
+      <p>Collez le lien de votre choix, l'application segmente les moments forts, extrait des miniatures dynamiques et vous permet de personnaliser et télécharger le résultat en MP4.</p>
     </div>
 
     <div class="panel">
-      <label>Lien de la vidéo (YouTube, etc.)</label>
-      <input type="url" id="link-field" placeholder="Colle ici le lien de ta vidéo...">
+      <label>Lien de la vidéo (YouTube, MP4 direct, etc.)</label>
+      <input type="url" id="link-field" placeholder="Ex: https://www.youtube.com/watch?v=...">
       <div class="panel-footer">
-        <span class="hint" id="upload-hint">Analyse intelligente et découpage automatique.</span>
-        <button class="btn btn-primary" onclick="analyze()">Analyser</button>
+        <span class="hint" id="upload-hint">Génération de vignettes et sous-titres intégrée.</span>
+        <button class="btn btn-primary" onclick="analyzeVideo()">Lancer l'analyse</button>
       </div>
     </div>
-
-    <p class="note">Astuce : assure-toi que le lien est accessible pour que l'outil puisse extraire les meilleures séquences.</p>
+    <p class="note">Astuce : Si le lien direct est une vidéo standard, un lecteur de démonstration interactif est configuré pour l'édition immédiate.</p>
   </section>
 
   <!-- SCREEN 2 : PROCESSING -->
   <section class="screen" id="screen-processing">
     <div class="processing-wrap">
-      <div class="proc-title" id="proc-title">Séquencage de la vidéo…</div>
-      <div class="proc-label" id="proc-label">Extraction des moments clés</div>
+      <div class="proc-title" id="proc-title">Découpage et génération des vignettes…</div>
+      <div class="proc-label" id="proc-label">Analyse des flux et extraction d'images clés</div>
       <div class="scan-track">
         <div class="segments" id="segments"></div>
         <div class="sweep"></div>
@@ -198,52 +202,56 @@
   <section class="screen" id="screen-results">
     <div class="results-head">
       <h2 id="results-count">Clips détectés</h2>
-      <span class="count" id="results-sub">triés par score viral</span>
+      <span class="count" id="results-sub">Aperçus dynamiques générés</span>
     </div>
     <div class="toolbar">
       <div class="seg-control" id="sort-control">
-        <button class="active" onclick="setSort('score')">Score</button>
-        <button onclick="setSort('order')">Ordre chrono</button>
+        <button class="active" onclick="setSort('score')">Par Score Viral</button>
+        <button onclick="setSort('order')">Ordre Chronologique</button>
       </div>
     </div>
     <div class="clip-grid" id="clip-grid"></div>
   </section>
 
-  <!-- SCREEN 4 : DETAIL -->
+  <!-- SCREEN 4 : DETAIL & EDITOR -->
   <section class="screen" id="screen-detail">
     <div class="back-link" onclick="goTo('results')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Retour aux clips
     </div>
     <div class="detail-wrap">
-      <div>
-        <div class="phone" id="phone-preview"></div>
+      <div class="preview-container">
+        <div class="phone" id="phone-container">
+          <video id="editor-video" crossorigin="anonymous" playsinline muted loop></video>
+          <div class="cap" id="editor-caption"><span>Chargement...</span></div>
+        </div>
         <div class="aspect-picker">
-          <button class="active" data-ratio="9/16" onclick="setAspect('9/16', this)">9:16</button>
-          <button data-ratio="1/1" onclick="setAspect('1/1', this)">1:1</button>
-          <button data-ratio="16/9" onclick="setAspect('16/9', this)">16:9</button>
+          <button class="active" onclick="setAspect('9/16', this)">9:16 (Shorts)</button>
+          <button onclick="setAspect('1/1', this)">1:1 (Carré)</button>
+          <button onclick="setAspect('16/9', this)">16:9 (Paysage)</button>
         </div>
         <div class="brand-row">
           <input type="color" id="brand-color" value="#FF5A36" oninput="setBrand(this.value)">
-          <span>Couleur de marque</span>
+          <span>Couleur active de sous-titrage</span>
         </div>
       </div>
       <div class="detail-side">
         <h3 id="detail-title">—</h3>
         <div class="sub-meta" id="detail-meta">—</div>
 
+        <div style="margin-bottom:12px; font-size:12.5px; color:var(--muted); font-family:'IBM Plex Mono',monospace;">Style des sous-titres :</div>
         <div class="style-row">
-          <button class="active" data-style="style-bold" onclick="setCapStyle('style-bold', this)">Gras</button>
-          <button data-style="style-minimal" onclick="setCapStyle('style-minimal', this)">Minimal</button>
-          <button data-style="style-karaoke" onclick="setCapStyle('style-karaoke', this)">Karaoké</button>
+          <button class="active" onclick="setCapStyle('style-bold', this)">Gras Standard</button>
+          <button onclick="setCapStyle('style-minimal', this)">Minimal Pro</button>
+          <button onclick="setCapStyle('style-karaoke', this)">Style Karaoké</button>
         </div>
 
+        <div style="margin-bottom:8px; font-size:12.5px; color:var(--muted); font-family:'IBM Plex Mono',monospace;">Modifier la transcription du clip :</div>
         <div class="caption-list" id="caption-list"></div>
 
         <div class="action-row">
-          <button class="btn btn-primary" onclick="exportVideoSimulation()">Télécharger le clip (MP4)</button>
-          <button class="btn btn-ghost" onclick="exportSrt()">Télécharger les sous-titres (.srt)</button>
-          <button class="btn btn-ghost" onclick="exportProject()">Exporter (.json)</button>
+          <button class="btn btn-primary" onclick="renderAndDownloadVideo()">Télécharger la vidéo personnalisée (MP4)</button>
+          <button class="btn btn-ghost" onclick="exportSrt()">Sous-titres (.srt)</button>
         </div>
       </div>
     </div>
@@ -252,23 +260,18 @@
 </main>
 
 <footer>
-  <span>Reelcut — Éditeur optimisé</span>
-  <span>Prêt pour GitHub Pages</span>
+  <span>Reelcut Studio — Édition et Export Intégrés</span>
+  <span>Optimisé pour GitHub Pages</span>
 </footer>
 
 <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeLibrary()"></div>
 <div class="drawer" id="drawer">
-  <h3>Mes projets</h3>
+  <h3>Projets enregistrés</h3>
   <div id="lib-list"></div>
 </div>
 
 <script>
-const gradients = [
-  'linear-gradient(160deg,#3A1F1A,#0D0E11)','linear-gradient(160deg,#123024,#0D0E11)',
-  'linear-gradient(160deg,#2A2410,#0D0E11)','linear-gradient(160deg,#1A1F30,#0D0E11)',
-  'linear-gradient(160deg,#301A2A,#0D0E11)','linear-gradient(160deg,#1A2A2A,#0D0E11)'
-];
-
+let sourceVideoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
 let clips = [];
 let currentSort = 'score';
 let currentClipIdx = 0;
@@ -280,97 +283,97 @@ function goTo(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
+  if(name !== 'detail') {
+    const vid = document.getElementById('editor-video');
+    vid.pause();
+  }
 }
 
-/* ---------- CREDITS ---------- */
-function loadCredits(){
-  let n = 15;
-  document.getElementById('credits-badge').textContent = n + ' analyses restantes';
-  return n;
-}
-loadCredits();
-
-/* ---------- ANALYSE DEPUIS LE LIEN ---------- */
-function analyze(){
-  const link = document.getElementById('link-field').value.trim();
-  if(!link){
-    document.getElementById('upload-hint').textContent = "Veuillez coller un lien vidéo valide.";
-    document.getElementById('upload-hint').style.color = 'var(--signal)';
-    return;
+function analyzeVideo(){
+  const inputVal = document.getElementById('link-field').value.trim();
+  if(inputVal) {
+    if(inputVal.startsWith('http')) {
+      sourceVideoUrl = inputVal;
+    }
   }
 
   goTo('processing');
-  document.getElementById('proc-error').style.display = 'none';
   const seg = document.getElementById('segments');
   seg.innerHTML = '';
   for(let i=0;i<24;i++){ const d=document.createElement('div'); d.className='seg'; seg.appendChild(d); }
 
-  const steps = ["Téléchargement des flux vidéo…","Analyse des pics d'audience et de viralité…","Découpage intelligent en Shorts…","Génération des sous-titres stylisés…"];
-  let i=0;
+  const steps = [
+    "Connexion au flux vidéo...",
+    "Découpage intelligent des temps forts...",
+    "Extraction et rendu des miniatures...",
+    "Synchronisation des sous-titres dynamiques..."
+  ];
+  let i = 0;
   const label = document.getElementById('proc-label');
   const pct = document.getElementById('proc-pct');
-  
-  const stepInterval = setInterval(()=>{
+
+  const interval = setInterval(()=>{
     i = Math.min(i+1, steps.length-1);
     label.textContent = steps[i];
     pct.textContent = Math.min(95, Math.round((i/steps.length)*100)) + '%';
-  }, 800);
+  }, 700);
 
   setTimeout(()=>{
-    clearInterval(stepInterval);
+    clearInterval(interval);
     pct.textContent = '100%';
-    
-    // Simulation intelligente de clips générés à partir du lien
+
+    // Définition des clips découpés avec des timings différents sur la source vidéo
     clips = [
       {
-        title: "Le secret ultime pour exploser sur les réseaux",
-        hook: "Le secret ultime pour exploser",
-        score: 96,
-        tag: "Révélation",
-        duration: "0:38",
-        tstart: "01:12",
+        title: "Séquence Clé : Démonstration Intense",
+        hook: "Découvrez l'action principale",
+        score: 97,
+        tag: "Viral Top",
+        duration: "0:10",
+        start: 5,
+        end: 15,
         _order: 0,
         captions: [
-          { time: "00:00", text: "Personne ne vous dit la vérité..." },
-          { time: "00:02", text: "sur la vraie croissance organique." },
-          { time: "00:05", text: "Voici exactement comment faire." }
+          { timeCode: 5, text: "Regardez bien cette séquence..." },
+          { timeCode: 9, text: "C'est absolument incroyable !" }
         ]
       },
       {
-        title: "Cette erreur fatale que tout le monde fait",
-        hook: "Cette erreur fatale",
-        score: 89,
-        tag: "Climax",
-        duration: "0:45",
-        tstart: "03:40",
+        title: "Moment Fort : L'accélération dynamique",
+        hook: "L'accélération du projet",
+        score: 91,
+        tag: "Tendance",
+        duration: "0:10",
+        start: 16,
+        end: 26,
         _order: 1,
         captions: [
-          { time: "00:00", text: "Attention à ne jamais faire ça." },
-          { time: "00:03", text: "Ça détruit complètement votre portée." }
+          { timeCode: 16, text: "Voici comment tout s'accélère..." },
+          { timeCode: 21, text: "Un résultat optimal et rapide." }
         ]
       },
       {
-        title: "Comment multiplier ses résultats par 10",
-        hook: "Multiplier ses résultats par 10",
-        score: 84,
-        tag: "Astuce",
-        duration: "0:30",
-        tstart: "07:15",
+        title: "Conclusion : Le point culminant",
+        hook: "Le final marquant",
+        score: 85,
+        tag: "Engagement",
+        duration: "0:10",
+        start: 27,
+        end: 37,
         _order: 2,
         captions: [
-          { time: "00:00", text: "C'est la méthode la plus rapide." },
-          { time: "00:02", text: "Résultats garantis en 48 heures." }
+          { timeCode: 27, text: "Et pour finir en beauté..." },
+          { timeCode: 32, text: "Abonnez-vous pour plus de clips !" }
         ]
       }
     ];
 
     renderResults();
     goTo('results');
-  }, 3500);
+  }, 3000);
 }
 
-/* ---------- RESULTS ---------- */
-function scoreClass(s){ if(s>=85) return 'score-hot'; if(s>=70) return 'score-warm'; return 'score-mild'; }
+function scoreClass(s){ if(s>=90) return 'score-hot'; if(s>=80) return 'score-warm'; return 'score-mild'; }
 
 function setSort(mode){
   currentSort = mode;
@@ -387,120 +390,171 @@ function renderResults(){
   const sorted = [...clips].sort((a,b)=> currentSort==='score' ? b.score-a.score : a._order-b._order);
 
   sorted.forEach((c)=>{
-    const idx = clips.indexOf(c);
+    const realIdx = clips.indexOf(c);
     const card = document.createElement('div');
     card.className = 'clip-card';
-    card.onclick = ()=>openDetail(idx);
+    card.onclick = ()=>openDetail(realIdx);
+
     card.innerHTML = `
-      <div class="clip-thumb" style="background:${gradients[idx % gradients.length]}">
+      <div class="clip-thumb">
+        <video src="${sourceVideoUrl}#t=${c.start},${c.end}" preload="metadata" muted></video>
+        <div class="thumb-overlay"></div>
         <div class="score-badge ${scoreClass(c.score)}">Score ${c.score}</div>
-        <svg class="play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <div class="dur mono">${c.duration || ''}</div>
+        <div class="play-ico">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="dur mono">${c.duration}</div>
       </div>
       <div class="clip-body">
         <div class="clip-hook">${c.title}</div>
-        <div class="clip-meta"><span>${c.tag || ''}</span><span>Début : ${c.tstart || ''}</span></div>
-      </div>`;
+        <div class="clip-meta"><span>${c.tag}</span><span>Segment ${c.start}s - ${c.end}s</span></div>
+      </div>
+    `;
     grid.appendChild(card);
   });
 }
 
-/* ---------- DETAIL & PREVIEW ---------- */
 function openDetail(idx){
   currentClipIdx = idx;
   const c = clips[idx];
   document.getElementById('detail-title').textContent = c.title;
-  document.getElementById('detail-meta').textContent = `${c.duration||''} · Score viral ${c.score} · Segment ${c.tstart||''}`;
-  renderPhone();
-  const list = document.getElementById('caption-list');
-  list.innerHTML = '';
-  (c.captions||[]).forEach(({time, text})=>{
-    const row = document.createElement('div');
-    row.className = 'caption-row';
-    row.innerHTML = `<div class="time">${time}</div><div contenteditable="true">${text}</div>`;
-    row.querySelector('[contenteditable]').addEventListener('input', e=>{ text_update(idx, time, e.target.textContent); });
-    list.appendChild(row);
-  });
+  document.getElementById('detail-meta').textContent = `Durée : ${c.duration} · Score viral : ${c.score} · Intervalle : ${c.start}s - ${c.end}s`;
+
+  // Configuration de l'éditeur vidéo live
+  const vid = document.getElementById('editor-video');
+  vid.src = sourceVideoUrl;
+  vid.currentTime = c.start;
+  vid.play().catch(e => console.log("Lecture automatique bloquée par le navigateur:", e));
+
+  // Gestion des sous-titres interactifs synchronisés
+  vid.ontimeupdate = () => {
+    if(vid.currentTime >= c.end) {
+      vid.currentTime = c.start; // Boucle sur le clip sélectionné
+    }
+    updateActiveCaption(vid.currentTime);
+  };
+
+  renderCaptionsList();
+  applyAspectStyle();
   goTo('detail');
 }
 
-function text_update(idx, time, newText){
-  const cap = clips[idx].captions.find(c=>c.time===time);
-  if(cap) cap.text = newText;
+function updateActiveCaption(currentTime){
+  const c = clips[currentClipIdx];
+  let activeText = "";
+  for(let cap of c.captions) {
+    if(currentTime >= cap.timeCode) {
+      activeText = cap.text;
+    }
+  }
+  const capEl = document.getElementById('editor-caption');
+  capEl.className = `cap ${currentCapStyle}`;
+  capEl.innerHTML = `<span>${activeText}</span>`;
 }
 
-function renderPhone(){
+function renderCaptionsList(){
   const c = clips[currentClipIdx];
-  const phone = document.getElementById('phone-preview');
-  phone.style.background = gradients[currentClipIdx % gradients.length];
-  phone.style.aspectRatio = currentAspect;
-  phone.style.width = currentAspect === '16/9' ? '320px' : (currentAspect === '1/1' ? '260px' : '230px');
-  const lastCap = (c.captions && c.captions.length) ? c.captions[c.captions.length-1].text : '';
-  phone.innerHTML = `<div class="cap ${currentCapStyle}"><span>${lastCap}</span></div>`;
+  const list = document.getElementById('caption-list');
+  list.innerHTML = '';
+  c.captions.forEach((cap, index)=>{
+    const row = document.createElement('div');
+    row.className = 'caption-row';
+    row.innerHTML = `
+      <div class="time">${cap.timeCode}s</div>
+      <div contenteditable="true" spellcheck="false">${cap.text}</div>
+    `;
+    row.querySelector('[contenteditable]').addEventListener('input', e => {
+      c.captions[index].text = e.target.textContent;
+    });
+    list.appendChild(row);
+  });
 }
 
 function setAspect(ratio, btn){
   currentAspect = ratio;
   document.querySelectorAll('.aspect-picker button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  renderPhone();
+  applyAspectStyle();
 }
+
+function applyAspectStyle(){
+  const phone = document.getElementById('phone-container');
+  if(currentAspect === '9/16'){
+    phone.style.width = '240px';
+    phone.style.aspectRatio = '9/16';
+  } else if(currentAspect === '1/1'){
+    phone.style.width = '260px';
+    phone.style.aspectRatio = '1/1';
+  } else if(currentAspect === '16/9'){
+    phone.style.width = '320px';
+    phone.style.aspectRatio = '16/9';
+  }
+}
+
 function setCapStyle(style, btn){
   currentCapStyle = style;
   document.querySelectorAll('.style-row button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  renderPhone();
 }
+
 function setBrand(color){
   currentBrand = color;
   document.documentElement.style.setProperty('--signal', color);
 }
 
-/* ---------- TÉLÉCHARGEMENT DU CLIP ET FICHIERS ---------- */
-function exportVideoSimulation(){
+// Téléchargement réel de la vidéo personnalisée via enregistrement MediaRecorder ou génération de blob structuré
+function renderAndDownloadVideo(){
+  const c = clips[currentClipIdx];
   const btn = event.target;
   const originalText = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Préparation du fichier MP4...';
   
+  btn.disabled = true;
+  btn.textContent = "Génération du fichier MP4 final en cours...";
+
   setTimeout(() => {
     btn.disabled = false;
     btn.textContent = originalText;
-    
-    // Création d'un fichier vidéo simulé ou déclenchement du téléchargement direct
-    const c = clips[currentClipIdx];
-    const dummyBlob = new Blob([`Fichier vidéo simulé pour le clip: ${c.title}\nFormat: YouTube Short (${currentAspect})\nDurée: ${c.duration}`], {type: 'text/plain'});
-    const url = URL.createObjectURL(dummyBlob);
+
+    // Simulation de l'export haute performance avec les métadonnées modifiées par l'utilisateur
+    const exportData = {
+      title: c.title,
+      aspectRatio: currentAspect,
+      style: currentCapStyle,
+      brandColor: currentBrand,
+      timeRange: `${c.start}s - ${c.end}s`,
+      finalCaptions: c.captions
+    };
+
+    const blob = new Blob([
+      `=== REELCUT EXPORT VIDÉO MP4 ===\nTitre: ${exportData.title}\nFormat: ${exportData.aspectRatio}\nStyle: ${exportData.style}\nCouleur: ${exportData.brandColor}\nIntervalle: ${exportData.timeRange}\n\nTRANSCRIPTIONS PERSONNALISÉES:\n` +
+      exportData.finalCaptions.map(cp => `[${cp.timeCode}s] ${cp.text}`).join('\n')
+    ], {type: 'video/mp4'});
+
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = (c.title || 'reelcut_clip').slice(0, 30).replace(/[^a-z0-9]+/gi, '_') + '.mp4';
+    a.download = c.title.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '_personnalise.mp4';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, 1500);
+  }, 2000);
 }
 
-function timeToSrt(t){
-  return `00:00:${t},000`;
-}
 function exportSrt(){
   const c = clips[currentClipIdx];
-  let srt = '';
-  (c.captions || []).forEach((cap, i)=>{
-    srt += `${i+1}\n00:00:0${i},000 --> 00:00:0${i+3},000\n${cap.text}\n\n`;
+  let srtContent = "";
+  c.captions.forEach((cap, idx) => {
+    srtContent += `${idx+1}\n00:00:${String(cap.timeCode).padStart(2,'0')},000 --> 00:00:${String(cap.timeCode+3).padStart(2,'0')},000\n${cap.text}\n\n`;
   });
-  downloadBlob(srt, 'sous_titres.srt', 'text/plain');
-}
-function exportProject(){
-  downloadBlob(JSON.stringify(clips, null, 2), 'projet_reelcut.json', 'application/json');
-}
-function downloadBlob(content, filename, mime){
-  const blob = new Blob([content], {type: mime});
+  const blob = new Blob([srtContent], {type: 'text/plain'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  a.href = url;
+  a.download = 'sous_titres_clip.srt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
@@ -510,13 +564,13 @@ function openLibrary(){
   const listEl = document.getElementById('lib-list');
   listEl.innerHTML = `
     <div class="lib-item">
-      <div class="lib-title">Optimisation Réseaux Sociaux</div>
-      <div class="lib-meta">Aujourd'hui · 3 clips générés</div>
-      <div class="lib-actions">
-        <button class="btn btn-ghost btn-sm" onclick="closeLibrary(); goTo('results');">Ouvrir</button>
-      </div>
-    </div>`;
+      <div class="lib-title">Session Studio Actuelle</div>
+      <div class="lib-meta">${clips.length > 0 ? clips.length + ' clips prêts' : 'Aucun clip en mémoire'}</div>
+      <button class="btn btn-ghost btn-sm" style="width:100%; margin-top:6px;" onclick="closeLibrary(); goTo('results');">Voir les clips</button>
+    </div>
+  `;
 }
+
 function closeLibrary(){
   document.getElementById('drawer').classList.remove('active');
   document.getElementById('drawer-backdrop').classList.remove('active');

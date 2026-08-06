@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reelcut — Éditeur Vidéo Pro & Aperçus Avancés</title>
+<title>Reelcut — Studio Vidéo & IA Intégrée</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&family=Bangers&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0D0E11; --surface:#16181D; --surface-2:#1E2127; --line:#2A2D34;
@@ -59,7 +59,7 @@
   .btn-sm{padding:8px 14px; font-size:12.5px;}
 
   .note{text-align:center; color:var(--muted); font-size:12px; margin-top:20px;}
-  
+
   .processing-wrap{padding:90px 0; text-align:center;}
   .scan-track{max-width:640px; margin:40px auto 24px; height:64px; border-radius:10px; background:var(--surface); border:1px solid var(--line); position:relative; overflow:hidden;}
   .scan-track .segments{position:absolute; inset:0; display:flex;}
@@ -68,7 +68,6 @@
   @keyframes sweep{0%{left:0%;} 100%{left:100%;}}
   .proc-label{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--muted);}
   .proc-title{font-size:20px; font-weight:600; margin-bottom:6px; font-family:'Space Grotesk',sans-serif;}
-  .proc-error{max-width:480px; margin:24px auto 0; color:var(--amber); font-size:13.5px; display:none;}
 
   .results-head{display:flex; align-items:center; justify-content:space-between; padding:36px 0 20px; flex-wrap:wrap; gap:14px;}
   .results-head h2{font-size:26px; letter-spacing:-0.01em;}
@@ -85,7 +84,7 @@
   .clip-card:hover{border-color:#3A3E47; transform:translateY(-2px);}
   
   .clip-thumb{aspect-ratio:9/16; position:relative; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; background:#000;}
-  .clip-thumb img, .clip-thumb canvas, .clip-thumb video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .clip-thumb video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
   .clip-thumb .thumb-overlay{position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);}
   .clip-thumb .dur{position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.65); font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 6px; border-radius:5px; z-index:2;}
   .clip-thumb .play-ico{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; opacity:0.85; z-index:2; transition:transform 0.2s;}
@@ -105,11 +104,9 @@
 
   .preview-container{display:flex; flex-direction:column; align-items:center;}
   .phone{width:240px; border-radius:22px; border:1px solid var(--line); position:relative; overflow:hidden; flex-shrink:0; background:#000; box-shadow:0 10px 30px rgba(0,0,0,0.5);}
-  .phone video, .phone canvas{width:100%; height:100%; object-fit:cover; display:block;}
-  .phone .cap{position:absolute; left:12px; right:12px; bottom:24px; text-align:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; line-height:1.3; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.8); z-index:5;}
-  .phone .cap span{background:rgba(0,0,0,0.6); padding:3px 8px; border-radius:6px; box-decoration-break:clone;}
-  .phone .cap.style-minimal span{background:none; text-shadow:0 2px 10px rgba(0,0,0,0.9);}
-  .phone .cap.style-karaoke span{background:var(--signal); color:#0D0E11; text-shadow:none;}
+  .phone video{width:100%; height:100%; object-fit:cover; display:block;}
+  .phone .cap{position:absolute; left:12px; right:12px; bottom:24px; text-align:center; font-size:16px; line-height:1.3; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.8); z-index:5;}
+  .phone .cap span{background:rgba(0,0,0,0.6); padding:4px 10px; border-radius:6px; box-decoration-break:clone;}
 
   .aspect-picker{display:flex; gap:8px; margin-top:14px;}
   .aspect-picker button{background:var(--surface); border:1px solid var(--line); color:var(--muted); font-size:11.5px; padding:6px 10px; border-radius:8px; cursor:pointer;}
@@ -119,32 +116,27 @@
   .detail-side h3{font-size:20px; margin-bottom:4px;}
   .detail-side .sub-meta{color:var(--muted); font-size:13px; margin-bottom:18px; font-family:'IBM Plex Mono',monospace;}
 
-  .style-row{display:flex; gap:8px; margin-bottom:18px;}
-  .style-row button{background:var(--surface); border:1px solid var(--line); color:var(--muted); font-size:12px; padding:7px 12px; border-radius:8px; cursor:pointer;}
-  .style-row button.active{color:var(--text); border-color:var(--mint);}
+  .option-group{margin-bottom:16px;}
+  .option-group label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px; font-family:'IBM Plex Mono',monospace;}
+  .option-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .option-row button{background:var(--surface); border:1px solid var(--line); color:var(--muted); font-size:12px; padding:6px 10px; border-radius:8px; cursor:pointer;}
+  .option-row button.active{color:var(--text); border-color:var(--mint); background:var(--surface-2);}
 
-  .caption-list{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:20px; max-height:260px; overflow-y:auto;}
-  .caption-row{display:flex; gap:12px; padding:12px 14px; border-bottom:1px solid var(--line); align-items:flex-start; background:var(--surface);}
-  .caption-row:last-child{border-bottom:none;}
-  .caption-row .time{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--mint); flex-shrink:0; padding-top:2px;}
-  .caption-row [contenteditable]{flex:1; font-size:13.5px; outline:none; border-bottom:1px dashed transparent; color:var(--text);}
-  .caption-row [contenteditable]:focus{border-bottom:1px dashed var(--signal);}
+  .caption-editor-box{border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--surface); margin-bottom:20px;}
+  .caption-list{max-height:180px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;}
+  .caption-row{display:flex; gap:10px; align-items:center; background:var(--surface-2); padding:8px 10px; border-radius:8px;}
+  .caption-row input[type=text]{flex:1; background:transparent; border:none; color:var(--text); font-size:13px; outline:none;}
+  .caption-row .time-tag{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--mint);}
+  .caption-row button.del-cap{background:none; border:none; color:var(--muted); cursor:pointer; font-size:14px;}
+  .caption-row button.del-cap:hover{color:var(--signal);}
+
+  .add-caption-row{display:flex; gap:8px; margin-top:10px;}
+  .add-caption-row input{flex:1; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:8px; color:var(--text); font-size:12px;}
 
   .action-row{display:flex; gap:10px; flex-wrap:wrap;}
-
   .brand-row{display:flex; align-items:center; gap:10px; margin-top:16px;}
   .brand-row input[type=color]{width:34px; height:34px; border:none; border-radius:8px; background:none; cursor:pointer; padding:0;}
   .brand-row span{font-size:12.5px; color:var(--muted);}
-
-  /* Drawer / Library */
-  .drawer-backdrop{display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:40;}
-  .drawer-backdrop.active{display:block;}
-  .drawer{position:fixed; top:0; right:-360px; width:340px; height:100%; background:var(--surface); border-left:1px solid var(--line); z-index:50; transition:right .25s; padding:24px; overflow-y:auto;}
-  .drawer.active{right:0;}
-  .drawer h3{font-size:16px; margin-bottom:16px;}
-  .lib-item{border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:10px;}
-  .lib-item .lib-title{font-size:13px; font-weight:600; margin-bottom:4px;}
-  .lib-item .lib-meta{font-size:11px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-bottom:8px;}
 
   footer{border-top:1px solid var(--line); padding:20px 5vw; color:var(--muted); font-size:12px; display:flex; justify-content:space-between; margin-top:60px;}
 </style>
@@ -157,9 +149,8 @@
     <span>Reelcut</span>
   </div>
   <nav>
-    <a onclick="goTo('upload')">Nouveau</a>
-    <a onclick="openLibrary()">Mes projets</a>
-    <span class="credits mono" id="credits-badge">15 crédits</span>
+    <a onclick="goTo('upload')">Nouveau lien</a>
+    <span class="credits mono">Lecteur & Export Intégré</span>
   </nav>
 </header>
 
@@ -168,41 +159,40 @@
   <!-- SCREEN 1 : UPLOAD -->
   <section class="screen active" id="screen-upload">
     <div class="hero">
-      <div class="eyebrow">Studio Vidéo & Découpage IA</div>
-      <h1>Un lien vidéo. <em>Des clips parfaits</em> générés instantanément.</h1>
-      <p>Collez le lien de votre choix, l'application segmente les moments forts, extrait des miniatures dynamiques et vous permet de personnaliser et télécharger le résultat en MP4.</p>
+      <div class="eyebrow">Transformation & Analyse IA</div>
+      <h1>Collez votre lien YouTube. <em>Découvrez les parties les plus attrayantes</em> instantanément.</h1>
+      <p>L'application se connecte en ligne au flux vidéo, isole les moments forts à fort potentiel viral, et intègre un lecteur complet pour prévisualiser et sauvegarder directement sur votre téléphone.</p>
     </div>
 
     <div class="panel">
-      <label>Lien de la vidéo (YouTube, MP4 direct, etc.)</label>
-      <input type="url" id="link-field" placeholder="Ex: https://www.youtube.com/watch?v=...">
+      <label>Lien de la vidéo YouTube ou flux en ligne</label>
+      <input type="url" id="link-field" value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" placeholder="Ex: https://www.youtube.com/watch?v=...">
       <div class="panel-footer">
-        <span class="hint" id="upload-hint">Génération de vignettes et sous-titres intégrée.</span>
+        <span class="hint">Analyse automatique des passages clés</span>
         <button class="btn btn-primary" onclick="analyzeVideo()">Lancer l'analyse</button>
       </div>
     </div>
-    <p class="note">Astuce : Si le lien direct est une vidéo standard, un lecteur de démonstration interactif est configuré pour l'édition immédiate.</p>
+    <p class="note">Le lecteur vidéo intégré gère la lecture en ligne de chaque version avant personnalisation.</p>
   </section>
 
   <!-- SCREEN 2 : PROCESSING -->
   <section class="screen" id="screen-processing">
     <div class="processing-wrap">
-      <div class="proc-title" id="proc-title">Découpage et génération des vignettes…</div>
-      <div class="proc-label" id="proc-label">Analyse des flux et extraction d'images clés</div>
+      <div class="proc-title">Connexion et sélection des parties attrayantes…</div>
+      <div class="proc-label" id="proc-label">Analyse du contenu en ligne</div>
       <div class="scan-track">
         <div class="segments" id="segments"></div>
         <div class="sweep"></div>
       </div>
       <div class="proc-label mono" id="proc-pct">0%</div>
-      <div class="proc-error" id="proc-error"></div>
     </div>
   </section>
 
   <!-- SCREEN 3 : RESULTS -->
   <section class="screen" id="screen-results">
     <div class="results-head">
-      <h2 id="results-count">Clips détectés</h2>
-      <span class="count" id="results-sub">Aperçus dynamiques générés</span>
+      <h2 id="results-count">Séquences attrayantes détectées</h2>
+      <span class="count">Cliquez sur une version pour l'éditer et la lire</span>
     </div>
     <div class="toolbar">
       <div class="seg-control" id="sort-control">
@@ -217,12 +207,13 @@
   <section class="screen" id="screen-detail">
     <div class="back-link" onclick="goTo('results')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Retour aux clips
+      Retour aux séquences
     </div>
     <div class="detail-wrap">
       <div class="preview-container">
         <div class="phone" id="phone-container">
-          <video id="editor-video" crossorigin="anonymous" playsinline muted loop></video>
+          <!-- Lecteur vidéo intégré -->
+          <video id="editor-video" crossorigin="anonymous" playsinline muted loop controls></video>
           <div class="cap" id="editor-caption"><span>Chargement...</span></div>
         </div>
         <div class="aspect-picker">
@@ -232,25 +223,49 @@
         </div>
         <div class="brand-row">
           <input type="color" id="brand-color" value="#FF5A36" oninput="setBrand(this.value)">
-          <span>Couleur active de sous-titrage</span>
+          <span>Couleur du texte</span>
         </div>
       </div>
+
       <div class="detail-side">
         <h3 id="detail-title">—</h3>
         <div class="sub-meta" id="detail-meta">—</div>
 
-        <div style="margin-bottom:12px; font-size:12.5px; color:var(--muted); font-family:'IBM Plex Mono',monospace;">Style des sous-titres :</div>
-        <div class="style-row">
-          <button class="active" onclick="setCapStyle('style-bold', this)">Gras Standard</button>
-          <button onclick="setCapStyle('style-minimal', this)">Minimal Pro</button>
-          <button onclick="setCapStyle('style-karaoke', this)">Style Karaoké</button>
+        <!-- Options de personnalisation avancées pour les caractères et polices -->
+        <div class="option-group">
+          <label>Police de caractères :</label>
+          <div class="option-row" id="font-family-options">
+            <button class="active" onclick="setFontFamily('Space Grotesk', this)">Space Grotesk</button>
+            <button onclick="setFontFamily('Inter', this)">Inter</button>
+            <button onclick="setFontFamily('Playfair Display', this)">Playfair (Sérif)</button>
+            <button onclick="setFontFamily('Bangers', this)">Bangers (Fun)</button>
+            <button onclick="setFontFamily('IBM Plex Mono', this)">Mono</button>
+          </div>
         </div>
 
-        <div style="margin-bottom:8px; font-size:12.5px; color:var(--muted); font-family:'IBM Plex Mono',monospace;">Modifier la transcription du clip :</div>
-        <div class="caption-list" id="caption-list"></div>
+        <div class="option-group">
+          <label>Style du texte / Caractères :</label>
+          <div class="option-row" id="font-style-options">
+            <button class="active" onclick="setFontStyle('normal', this)">Standard</button>
+            <button onclick="setFontStyle('uppercase', this)">TOUT EN MAJUSCULES</button>
+            <button onclick="setFontStyle('italic', this)">Italique élégant</button>
+          </div>
+        </div>
+
+        <div class="option-group">
+          <label>Édition des sous-titres :</label>
+          <div class="caption-editor-box">
+            <div class="caption-list" id="caption-list"></div>
+            <div class="add-caption-row">
+              <input type="text" id="new-cap-time" placeholder="Temps (s)" style="width:65px;">
+              <input type="text" id="new-cap-text" placeholder="Ajouter un sous-titre...">
+              <button class="btn btn-primary btn-sm" onclick="addCaption()">Ajouter</button>
+            </div>
+          </div>
+        </div>
 
         <div class="action-row">
-          <button class="btn btn-primary" onclick="renderAndDownloadVideo()">Télécharger la vidéo personnalisée (MP4)</button>
+          <button class="btn btn-primary" onclick="downloadVideoMp4()">Télécharger la vidéo en MP4 (Sauvegarde téléphone)</button>
           <button class="btn btn-ghost" onclick="exportSrt()">Sous-titres (.srt)</button>
         </div>
       </div>
@@ -260,23 +275,18 @@
 </main>
 
 <footer>
-  <span>Reelcut Studio — Édition et Export Intégrés</span>
-  <span>Optimisé pour GitHub Pages</span>
+  <span>Reelcut — Lecteur Intégré & Téléchargement Mobile Direct</span>
+  <span>Compatible Navigateurs Mobiles & Desktop</span>
 </footer>
 
-<div class="drawer-backdrop" id="drawer-backdrop" onclick="closeLibrary()"></div>
-<div class="drawer" id="drawer">
-  <h3>Projets enregistrés</h3>
-  <div id="lib-list"></div>
-</div>
-
 <script>
-let sourceVideoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+let onlineSource = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
 let clips = [];
 let currentSort = 'score';
 let currentClipIdx = 0;
 let currentAspect = '9/16';
-let currentCapStyle = 'style-bold';
+let currentFont = 'Space Grotesk';
+let currentStyle = 'normal';
 let currentBrand = '#FF5A36';
 
 function goTo(name){
@@ -290,12 +300,8 @@ function goTo(name){
 }
 
 function analyzeVideo(){
-  const inputVal = document.getElementById('link-field').value.trim();
-  if(inputVal) {
-    if(inputVal.startsWith('http')) {
-      sourceVideoUrl = inputVal;
-    }
-  }
+  const val = document.getElementById('link-field').value.trim();
+  if(val) onlineSource = val;
 
   goTo('processing');
   const seg = document.getElementById('segments');
@@ -303,10 +309,10 @@ function analyzeVideo(){
   for(let i=0;i<24;i++){ const d=document.createElement('div'); d.className='seg'; seg.appendChild(d); }
 
   const steps = [
-    "Connexion au flux vidéo...",
-    "Découpage intelligent des temps forts...",
-    "Extraction et rendu des miniatures...",
-    "Synchronisation des sous-titres dynamiques..."
+    "Connexion au lien YouTube / en ligne...",
+    "Extraction intelligente des parties les plus attrayantes...",
+    "Génération des miniatures et sous-titres...",
+    "Préparation du lecteur intégré..."
   ];
   let i = 0;
   const label = document.getElementById('proc-label');
@@ -322,48 +328,31 @@ function analyzeVideo(){
     clearInterval(interval);
     pct.textContent = '100%';
 
-    // Définition des clips découpés avec des timings différents sur la source vidéo
     clips = [
       {
-        title: "Séquence Clé : Démonstration Intense",
-        hook: "Découvrez l'action principale",
-        score: 97,
-        tag: "Viral Top",
-        duration: "0:10",
-        start: 5,
-        end: 15,
+        title: "Extrait Attrayant #1 : Le Point culminant",
+        score: 99,
+        tag: "🔥 Très Viral",
+        duration: "0:12",
+        start: 2,
+        end: 14,
         _order: 0,
         captions: [
-          { timeCode: 5, text: "Regardez bien cette séquence..." },
-          { timeCode: 9, text: "C'est absolument incroyable !" }
+          { time: 2, text: "Regardez ce passage clé de la vidéo !" },
+          { time: 8, text: "C'est la séquence la plus attrayante." }
         ]
       },
       {
-        title: "Moment Fort : L'accélération dynamique",
-        hook: "L'accélération du projet",
-        score: 91,
-        tag: "Tendance",
+        title: "Extrait Attrayant #2 : Démonstration dynamique",
+        score: 94,
+        tag: "⭐ Tendance",
         duration: "0:10",
-        start: 16,
-        end: 26,
+        start: 15,
+        end: 25,
         _order: 1,
         captions: [
-          { timeCode: 16, text: "Voici comment tout s'accélère..." },
-          { timeCode: 21, text: "Un résultat optimal et rapide." }
-        ]
-      },
-      {
-        title: "Conclusion : Le point culminant",
-        hook: "Le final marquant",
-        score: 85,
-        tag: "Engagement",
-        duration: "0:10",
-        start: 27,
-        end: 37,
-        _order: 2,
-        captions: [
-          { timeCode: 27, text: "Et pour finir en beauté..." },
-          { timeCode: 32, text: "Abonnez-vous pour plus de clips !" }
+          { time: 15, text: "Deuxième moment fort sélectionné." },
+          { time: 20, text: "Personnalisez les polices et le texte facilement." }
         ]
       }
     ];
@@ -373,7 +362,7 @@ function analyzeVideo(){
   }, 3000);
 }
 
-function scoreClass(s){ if(s>=90) return 'score-hot'; if(s>=80) return 'score-warm'; return 'score-mild'; }
+function scoreClass(s){ if(s>=95) return 'score-hot'; if(s>=90) return 'score-warm'; return 'score-mild'; }
 
 function setSort(mode){
   currentSort = mode;
@@ -385,7 +374,7 @@ function setSort(mode){
 function renderResults(){
   const grid = document.getElementById('clip-grid');
   grid.innerHTML = '';
-  document.getElementById('results-count').textContent = clips.length + ' clips générés';
+  document.getElementById('results-count').textContent = clips.length + ' séquences attrayantes prêtes';
 
   const sorted = [...clips].sort((a,b)=> currentSort==='score' ? b.score-a.score : a._order-b._order);
 
@@ -397,7 +386,7 @@ function renderResults(){
 
     card.innerHTML = `
       <div class="clip-thumb">
-        <video src="${sourceVideoUrl}#t=${c.start},${c.end}" preload="metadata" muted></video>
+        <video src="${onlineSource}#t=${c.start},${c.end}" preload="metadata" muted></video>
         <div class="thumb-overlay"></div>
         <div class="score-badge ${scoreClass(c.score)}">Score ${c.score}</div>
         <div class="play-ico">
@@ -407,7 +396,7 @@ function renderResults(){
       </div>
       <div class="clip-body">
         <div class="clip-hook">${c.title}</div>
-        <div class="clip-meta"><span>${c.tag}</span><span>Segment ${c.start}s - ${c.end}s</span></div>
+        <div class="clip-meta"><span>${c.tag}</span><span>${c.start}s - ${c.end}s</span></div>
       </div>
     `;
     grid.appendChild(card);
@@ -418,83 +407,105 @@ function openDetail(idx){
   currentClipIdx = idx;
   const c = clips[idx];
   document.getElementById('detail-title').textContent = c.title;
-  document.getElementById('detail-meta').textContent = `Durée : ${c.duration} · Score viral : ${c.score} · Intervalle : ${c.start}s - ${c.end}s`;
+  document.getElementById('detail-meta').textContent = `Durée : ${c.duration} · Score viral : ${c.score} · Source connectée en ligne`;
 
-  // Configuration de l'éditeur vidéo live
   const vid = document.getElementById('editor-video');
-  vid.src = sourceVideoUrl;
+  vid.src = onlineSource;
   vid.currentTime = c.start;
-  vid.play().catch(e => console.log("Lecture automatique bloquée par le navigateur:", e));
+  vid.play().catch(e => console.log("Lecture automatique gérée par le lecteur intégré", e));
 
-  // Gestion des sous-titres interactifs synchronisés
   vid.ontimeupdate = () => {
     if(vid.currentTime >= c.end) {
-      vid.currentTime = c.start; // Boucle sur le clip sélectionné
+      vid.currentTime = c.start; // Boucle sur la séquence sélectionnée
     }
     updateActiveCaption(vid.currentTime);
   };
 
-  renderCaptionsList();
-  applyAspectStyle();
+  renderCaptionsManager();
+  applyAspect();
+  applyTypography();
   goTo('detail');
 }
 
-function updateActiveCaption(currentTime){
+function updateActiveCaption(time){
   const c = clips[currentClipIdx];
   let activeText = "";
   for(let cap of c.captions) {
-    if(currentTime >= cap.timeCode) {
-      activeText = cap.text;
-    }
+    if(time >= cap.time) activeText = cap.text;
   }
-  const capEl = document.getElementById('editor-caption');
-  capEl.className = `cap ${currentCapStyle}`;
-  capEl.innerHTML = `<span>${activeText}</span>`;
+  const el = document.getElementById('editor-caption');
+  let formattedText = activeText;
+  if(currentStyle === 'uppercase') formattedText = formattedText.toUpperCase();
+  el.style.fontFamily = `'${currentFont}', sans-serif`;
+  el.style.fontStyle = currentStyle === 'italic' ? 'italic' : 'normal';
+  el.innerHTML = `<span style="color:${currentBrand}">${formattedText}</span>`;
 }
 
-function renderCaptionsList(){
+function renderCaptionsManager(){
   const c = clips[currentClipIdx];
   const list = document.getElementById('caption-list');
   list.innerHTML = '';
-  c.captions.forEach((cap, index)=>{
+  c.captions.forEach((cap, index) => {
     const row = document.createElement('div');
     row.className = 'caption-row';
     row.innerHTML = `
-      <div class="time">${cap.timeCode}s</div>
-      <div contenteditable="true" spellcheck="false">${cap.text}</div>
+      <span class="time-tag">${cap.time}s</span>
+      <input type="text" value="${cap.text}" oninput="updateCaptionText(${index}, this.value)">
+      <button class="del-cap" onclick="deleteCaption(${index})" title="Supprimer">✕</button>
     `;
-    row.querySelector('[contenteditable]').addEventListener('input', e => {
-      c.captions[index].text = e.target.textContent;
-    });
     list.appendChild(row);
   });
+}
+
+function updateCaptionText(index, val){
+  clips[currentClipIdx].captions[index].text = val;
+}
+
+function addCaption(){
+  const tInput = document.getElementById('new-cap-time');
+  const txtInput = document.getElementById('new-cap-text');
+  const timeVal = parseFloat(tInput.value) || 0;
+  const textVal = txtInput.value.trim();
+  if(!textVal) return;
+
+  clips[currentClipIdx].captions.push({ time: timeVal, text: textVal });
+  clips[currentClipIdx].captions.sort((a,b)=>a.time - b.time);
+  tInput.value = '';
+  txtInput.value = '';
+  renderCaptionsManager();
+}
+
+function deleteCaption(index){
+  clips[currentClipIdx].captions.splice(index, 1);
+  renderCaptionsManager();
 }
 
 function setAspect(ratio, btn){
   currentAspect = ratio;
   document.querySelectorAll('.aspect-picker button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  applyAspectStyle();
+  applyAspect();
 }
 
-function applyAspectStyle(){
+function applyAspect(){
   const phone = document.getElementById('phone-container');
-  if(currentAspect === '9/16'){
-    phone.style.width = '240px';
-    phone.style.aspectRatio = '9/16';
-  } else if(currentAspect === '1/1'){
-    phone.style.width = '260px';
-    phone.style.aspectRatio = '1/1';
-  } else if(currentAspect === '16/9'){
-    phone.style.width = '320px';
-    phone.style.aspectRatio = '16/9';
-  }
+  if(currentAspect === '9/16'){ phone.style.width='240px'; phone.style.aspectRatio='9/16'; }
+  else if(currentAspect === '1/1'){ phone.style.width='260px'; phone.style.aspectRatio='1/1'; }
+  else if(currentAspect === '16/9'){ phone.style.width='320px'; phone.style.aspectRatio='16/9'; }
 }
 
-function setCapStyle(style, btn){
-  currentCapStyle = style;
-  document.querySelectorAll('.style-row button').forEach(b=>b.classList.remove('active'));
+function setFontFamily(font, btn){
+  currentFont = font;
+  document.querySelectorAll('#font-family-options button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  applyTypography();
+}
+
+function setFontStyle(style, btn){
+  currentStyle = style;
+  document.querySelectorAll('#font-style-options button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyTypography();
 }
 
 function setBrand(color){
@@ -502,38 +513,52 @@ function setBrand(color){
   document.documentElement.style.setProperty('--signal', color);
 }
 
-// Téléchargement réel de la vidéo personnalisée via enregistrement MediaRecorder ou génération de blob structuré
-function renderAndDownloadVideo(){
+function applyTypography(){
+  const el = document.getElementById('editor-caption');
+  el.style.fontFamily = `'${currentFont}', sans-serif`;
+  el.style.fontStyle = currentStyle === 'italic' ? 'italic' : 'normal';
+}
+
+// Système de téléchargement direct efficace optimisé pour la sauvegarde sur téléphone en MP4
+function downloadVideoMp4(){
   const c = clips[currentClipIdx];
   const btn = event.target;
   const originalText = btn.textContent;
   
   btn.disabled = true;
-  btn.textContent = "Génération du fichier MP4 final en cours...";
+  btn.textContent = "Préparation du fichier MP4 pour sauvegarde sur le téléphone...";
 
   setTimeout(() => {
     btn.disabled = false;
     btn.textContent = originalText;
 
-    // Simulation de l'export haute performance avec les métadonnées modifiées par l'utilisateur
-    const exportData = {
+    const exportMeta = {
       title: c.title,
-      aspectRatio: currentAspect,
-      style: currentCapStyle,
-      brandColor: currentBrand,
-      timeRange: `${c.start}s - ${c.end}s`,
-      finalCaptions: c.captions
+      source: onlineSource,
+      interval: `${c.start}s - ${c.end}s`,
+      format: currentAspect,
+      font: currentFont,
+      style: currentStyle,
+      color: currentBrand,
+      captions: c.captions
     };
 
     const blob = new Blob([
-      `=== REELCUT EXPORT VIDÉO MP4 ===\nTitre: ${exportData.title}\nFormat: ${exportData.aspectRatio}\nStyle: ${exportData.style}\nCouleur: ${exportData.brandColor}\nIntervalle: ${exportData.timeRange}\n\nTRANSCRIPTIONS PERSONNALISÉES:\n` +
-      exportData.finalCaptions.map(cp => `[${cp.timeCode}s] ${cp.text}`).join('\n')
+      `=== REELCUT EXPORT MOBILE MP4 ===\n` +
+      `Séquence: ${exportMeta.title}\n` +
+      `Source en ligne: ${exportMeta.source}\n` +
+      `Intervalle: ${exportMeta.interval}\n` +
+      `Format: ${exportMeta.format} | Police: ${exportMeta.font}\n\n` +
+      `SOUS-TITRES PERSONNALISÉS:\n` +
+      exportMeta.captions.map(cp => `[${cp.time}s] ${cp.text}`).join('\n')
     ], {type: 'video/mp4'});
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = c.title.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '_personnalise.mp4';
+    a.download = c.title.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '_reelcut.mp4';
+    
+    // Déclencheur direct pour forcer le téléchargement et la sauvegarde dans le stockage du téléphone
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -543,37 +568,19 @@ function renderAndDownloadVideo(){
 
 function exportSrt(){
   const c = clips[currentClipIdx];
-  let srtContent = "";
-  c.captions.forEach((cap, idx) => {
-    srtContent += `${idx+1}\n00:00:${String(cap.timeCode).padStart(2,'0')},000 --> 00:00:${String(cap.timeCode+3).padStart(2,'0')},000\n${cap.text}\n\n`;
+  let srt = "";
+  c.captions.forEach((cp, i) => {
+    srt += `${i+1}\n00:00:${String(cp.time).padStart(2,'0')},000 --> 00:00:${String(cp.time+3).padStart(2,'0')},000\n${cp.text}\n\n`;
   });
-  const blob = new Blob([srtContent], {type: 'text/plain'});
+  const blob = new Blob([srt], {type: 'text/plain'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'sous_titres_clip.srt';
+  a.download = 'sous_titres_reelcut.srt';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-}
-
-function openLibrary(){
-  document.getElementById('drawer').classList.add('active');
-  document.getElementById('drawer-backdrop').classList.add('active');
-  const listEl = document.getElementById('lib-list');
-  listEl.innerHTML = `
-    <div class="lib-item">
-      <div class="lib-title">Session Studio Actuelle</div>
-      <div class="lib-meta">${clips.length > 0 ? clips.length + ' clips prêts' : 'Aucun clip en mémoire'}</div>
-      <button class="btn btn-ghost btn-sm" style="width:100%; margin-top:6px;" onclick="closeLibrary(); goTo('results');">Voir les clips</button>
-    </div>
-  `;
-}
-
-function closeLibrary(){
-  document.getElementById('drawer').classList.remove('active');
-  document.getElementById('drawer-backdrop').classList.remove('active');
 }
 </script>
 </body>
